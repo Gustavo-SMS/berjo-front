@@ -67,6 +67,8 @@ const router = useRouter()
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const props = defineProps(['id', 'name', 'email', 'phone', 'street', 'house_number', 'city', 'district', 'zip', 'debt', 'getCustomers'])
 
 const showModal = ref(false)
@@ -110,7 +112,7 @@ const submitUpdate = async (event) => {
       }
 
       try {
-        const response = await fetchWithAuth("http://127.0.0.1:3333/customers", {
+        const response = await fetchWithAuth(`${apiUrl}/customers`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -135,7 +137,7 @@ const submitUpdate = async (event) => {
 
 const deleteCustomer = async () => {
   try {
-        const response = await fetchWithAuth(`http://127.0.0.1:3333/customers/${props.id}`, {
+        const response = await fetchWithAuth(`${apiUrl}/customers/${props.id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

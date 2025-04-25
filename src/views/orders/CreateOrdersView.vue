@@ -39,6 +39,8 @@ import { useNotificationStore } from '@/stores/notificationStore'
 import { fetchWithAuth } from '@/utils/api'
 import { useRouter } from 'vue-router'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const authStore = useAuthStore()
 const router = useRouter()
 const notificationStore = useNotificationStore()
@@ -75,7 +77,7 @@ const submitForm = async (event) => {
     }
     
     try {
-        const response = await fetchWithAuth('http://127.0.0.1:3333/orders', {
+        const response = await fetchWithAuth(`${apiUrl}/orders`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

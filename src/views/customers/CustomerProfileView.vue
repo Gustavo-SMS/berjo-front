@@ -49,6 +49,8 @@ import { fetchWithAuth } from '@/utils/api'
 import ChangeLoginModal from '@/components/modal/ChangeLoginModel.vue'
 import ChangePasswordModal from '@/components/modal/ChangePasswordModel.vue'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const authStore = useAuthStore()
 const router = useRouter()
 const notificationStore = useNotificationStore()
@@ -56,7 +58,7 @@ const customer = ref(null)
 
 const getCustomer = async () => {
   try {
-    const response = await fetchWithAuth(`/customers/${authStore.customerId}`, {
+    const response = await fetchWithAuth(`${apiUrl}/customers/${authStore.customerId}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     }, authStore, router)

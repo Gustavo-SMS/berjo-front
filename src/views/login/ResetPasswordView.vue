@@ -23,6 +23,8 @@
   import { useRoute, useRouter } from 'vue-router'
   import { useNotificationStore } from '@/stores/notificationStore'
   
+  const apiUrl = import.meta.env.VITE_API_URL
+
   const route = useRoute()
   const router = useRouter()
   const notificationStore = useNotificationStore()
@@ -45,7 +47,7 @@
       return
     }
     try {
-      const res = await fetch('http://127.0.0.1:3333/users/resetPassword', {
+      const res = await fetch(`${apiUrl}/users/resetPassword`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

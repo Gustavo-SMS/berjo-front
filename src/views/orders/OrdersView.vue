@@ -80,6 +80,8 @@ import { fetchWithAuth } from '@/utils/api'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const authStore = useAuthStore()
 const router = useRouter()
 const notificationStore = useNotificationStore()
@@ -101,7 +103,7 @@ function selectedCustomerId(event, arrayNomes) {
 }
 
 const getOrders = async (status, customerId) => {
-    let url = 'http://127.0.0.1:3333/orders/filter/'
+    let url = `${apiUrl}/orders/filter/`
     
     if (authStore.userRole === 'CUSTOMER') {
         customerId = authStore.customerId
@@ -152,7 +154,7 @@ const changeStatus = async (orderId) => {
     const payload = { id: orderId, status: newStatus }
 
     try {
-        const response = await fetchWithAuth(`http://127.0.0.1:3333/orders/status/`, {
+        const response = await fetchWithAuth(`${apiUrl}/orders/status/`, {
             method: 'PUT',
             headers: { 'Content-type': 'application/json' },
             credentials: 'include',
@@ -177,7 +179,7 @@ const deleteOrder = async (orderId) => {
     if (!confirm('Tem certeza que deseja excluir este pedido?')) return
 
     try {
-        const response = await fetchWithAuth(`http://127.0.0.1:3333/orders/${orderId}`, {
+        const response = await fetchWithAuth(`${apiUrl}/orders/${orderId}`, {
             method: 'DELETE',
             headers: { 'Content-type': 'application/json' },
             credentials: 'include'

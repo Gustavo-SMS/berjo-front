@@ -45,6 +45,8 @@ import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 import { fetchWithAuth } from '@/utils/api'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const authStore = useAuthStore()
 const router = useRouter()
 const notificationStore = useNotificationStore()
@@ -53,7 +55,7 @@ const customers = ref([])
 
     const getCustomers = async () => {
         try {
-            let url = 'http://127.0.0.1:3333/customers'
+            let url = `${apiUrl}/customers`
 
             if (authStore.userRole === 'CUSTOMER') {
                 url += `/${authStore.customerId}`
@@ -92,7 +94,7 @@ const customers = ref([])
         }
 
         try {
-            const response = await fetchWithAuth(`http://127.0.0.1:3333/customers/name/${input.value}`, {
+            const response = await fetchWithAuth(`${apiUrl}/customers/name/${input.value}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json'

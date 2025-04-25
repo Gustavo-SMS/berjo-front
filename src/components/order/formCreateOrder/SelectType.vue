@@ -17,6 +17,8 @@ const authStore = useAuthStore()
 const router = useRouter()
 const notificationStore = useNotificationStore()
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 defineEmits(['selectedOption'])
 const props = defineProps(['typeValue'])
 
@@ -26,7 +28,7 @@ const selectedType = ref(props.typeValue || '')
 
 const fetchTypes = async () => {
     try {
-        const response = await fetchWithAuth("http://127.0.0.1:3333/blind_types/type", {
+        const response = await fetchWithAuth(`${apiUrl}/blind_types/type`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json'

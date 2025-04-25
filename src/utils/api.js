@@ -1,6 +1,6 @@
 import { useLogout } from './logout'
 
-const API_BASE_URL = 'http://127.0.0.1:3333'
+const API_BASE_URL = import.meta.env.VITE_API_URL
 
 export async function fetchWithAuth(endpoint, options = {}, authStore, router) {
   const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`

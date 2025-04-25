@@ -47,6 +47,8 @@
   const newLogin = ref('')
   const confirmLogin = ref('')
   const currentPassword = ref('')
+
+  const apiUrl = import.meta.env.VITE_API_URL
   
   const notificationStore = useNotificationStore()
   
@@ -56,7 +58,7 @@
     }
   
     try {
-      const response = await fetchWithAuth('http://127.0.0.1:3333/users/login', {
+      const response = await fetchWithAuth(`${apiUrl}/users/login`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

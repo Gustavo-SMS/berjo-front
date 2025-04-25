@@ -36,6 +36,8 @@ import BlindTypeRow from '@/components/blindType/BlindTypeRow.vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const authStore = useAuthStore()
 const router = useRouter()
 const notificationStore = useNotificationStore()
@@ -45,7 +47,7 @@ const searchTerm = ref('')
 
     const getBlindTypes = async () => {
         try {
-            const response = await fetchWithAuth("http://127.0.0.1:3333/blind_types", {
+            const response = await fetchWithAuth(`${apiUrl}/blind_types`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json'
@@ -76,7 +78,7 @@ const searchTerm = ref('')
         }
 
         try {
-            const response = await fetchWithAuth(`http://127.0.0.1:3333/blind_types/type/${searchTerm.value}`, {
+            const response = await fetchWithAuth(`${apiUrl}/blind_types/type/${searchTerm.value}`, {
                 method: 'GET',
                 headers: {
                     'Content-type': 'application/json'

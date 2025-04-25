@@ -35,6 +35,8 @@ import { useNotificationStore } from '@/stores/notificationStore'
 import { useAuthStore } from '@/stores/authStore'
 import RecoverPasswordModal from '@/components/modal/RecoverPasswordModal.vue'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 const router = useRouter()
@@ -73,7 +75,7 @@ const submitForm = async (event) => {
     const formData = new FormData(loginForm.value)
     const data = Object.fromEntries(formData)
     try {
-      const response = await fetch('http://127.0.0.1:3333/login', {
+      const response = await fetch(`${apiUrl}/login`, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'
@@ -91,7 +93,7 @@ const submitForm = async (event) => {
         throw new Error(result.error || result.msg || 'Erro ao logar')
       }
 
-      const meRes = await fetch('http://127.0.0.1:3333/me', {
+      const meRes = await fetch(`${apiUrl}/me`, {
         credentials: 'include'
       })
 

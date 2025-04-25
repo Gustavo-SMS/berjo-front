@@ -39,9 +39,12 @@ import { fetchWithAuth } from '@/utils/api'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/authStore'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const authStore = useAuthStore()
 const router = useRouter()
 const notificationStore = useNotificationStore()
+
 
 const submitForm = async (event) => {
     event.preventDefault()
@@ -50,7 +53,7 @@ const submitForm = async (event) => {
     const formData = new FormData(form)
     const data = Object.fromEntries(formData)
     try {
-        const response = await fetchWithAuth('http://127.0.0.1:3333/blind_types', {
+        const response = await fetchWithAuth(`${apiUrl}/blind_types`, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'

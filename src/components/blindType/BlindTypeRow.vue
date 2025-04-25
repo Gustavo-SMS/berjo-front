@@ -50,6 +50,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
+const apiUrl = import.meta.env.VITE_API_URL
 
 const props = defineProps(['id', 'type', 'collection', 'color', 'max_width', 'price', 'getBlindTypes'])
 
@@ -86,7 +87,7 @@ const submitUpdate = async (event) => {
       }
 
       try {
-        const response = await fetchWithAuth("http://127.0.0.1:3333/blind_types", {
+        const response = await fetchWithAuth(`${apiUrl}/blind_types`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -111,7 +112,7 @@ const submitUpdate = async (event) => {
 
 const deleteCustomer = async () => {
   try {
-        const response = await fetchWithAuth(`http://127.0.0.1:3333/blind_types/${props.id}`, {
+        const response = await fetchWithAuth(`${apiUrl}/blind_types/${props.id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

@@ -56,6 +56,8 @@ import { fetchWithAuth } from '@/utils/api'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const authStore = useAuthStore()
 const router = useRouter()
 const notificationStore = useNotificationStore()
@@ -67,7 +69,7 @@ const submitForm = async (event) => {
     const formData = new FormData(form)
     const data = Object.fromEntries(formData)
     try {
-        const response = await fetchWithAuth('http://127.0.0.1:3333/customers', {
+        const response = await fetchWithAuth(`${apiUrl}/customers`, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'

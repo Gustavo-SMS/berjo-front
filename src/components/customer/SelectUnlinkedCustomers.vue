@@ -20,13 +20,15 @@ const props = defineProps(['refreshKey'])
 const authStore = useAuthStore()
 const router = useRouter()
 const notificationStore = useNotificationStore()
+
+const apiUrl = import.meta.env.VITE_API_URL
   
 const selectedCustomerId = ref('')
 const unlinkedCustomers = ref([])
   
 const fetchUnlinkedCustomers = async () => {
     try {
-      const response = await fetchWithAuth('http://127.0.0.1:3333/customers/unlinked', {
+      const response = await fetchWithAuth(`${apiUrl}/customers/unlinked`, {
               method: 'GET',
               headers: {
                   'Content-type': 'application/json'

@@ -17,13 +17,15 @@ const authStore = useAuthStore()
 const router = useRouter()
 const notificationStore = useNotificationStore()
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 defineEmits(['selectedOption']) 
 
 const customerNames = ref([])
 
 onMounted(async () => {
     try {
-        const response = await fetchWithAuth("http://127.0.0.1:3333/customers", {
+        const response = await fetchWithAuth(`${apiUrl}/customers`, {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json'

@@ -46,6 +46,8 @@
   const router = useRouter()
   const notificationStore = useNotificationStore()
 
+  const apiUrl = import.meta.env.VITE_API_URL
+
   const currentPassword = ref('')
   const newPassword = ref('')
   const confirmPassword = ref('')
@@ -56,7 +58,7 @@
     }
   
     try {
-      const response = await fetchWithAuth('http://127.0.0.1:3333/users/password', {
+      const response = await fetchWithAuth(`${apiUrl}/users/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

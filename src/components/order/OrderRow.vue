@@ -85,6 +85,8 @@ const router = useRouter()
 const notificationStore = useNotificationStore()
 const showModal = ref(false)
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const openDeleteModal = () => {
   showModal.value = true
 }
@@ -141,7 +143,7 @@ const submitUpdate = async (event) => {
         observation: editableObservation.value
       }
       try {
-        const response = await fetchWithAuth("http://127.0.0.1:3333/blinds", {
+        const response = await fetchWithAuth(`${apiUrl}/blinds`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -165,7 +167,7 @@ const submitUpdate = async (event) => {
 
 const deleteBlind = async () => {
   try {
-        const response = await fetchWithAuth(`http://127.0.0.1:3333/blinds/${props.id}`, {
+        const response = await fetchWithAuth(`${apiUrl}/blinds/${props.id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',

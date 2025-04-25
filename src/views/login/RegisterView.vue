@@ -33,6 +33,8 @@ import { useNotificationStore } from '@/stores/notificationStore'
 import { fetchWithAuth } from '@/utils/api'
 import SelectUnlinkedCustomers from '@/components/customer/SelectUnlinkedCustomers.vue'
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const notificationStore = useNotificationStore()
 const router = useRouter()
 const authStore = useAuthStore()
@@ -52,7 +54,7 @@ const submitForm = async (event) => {
     const data = Object.fromEntries(formData)
     data.customerId = unlinkedCustomerId.value
     try {
-        const response = await fetchWithAuth('http://127.0.0.1:3333/register', {
+        const response = await fetchWithAuth(`${apiUrl}/register`, {
         method: 'POST',
         headers: {
             'Content-type': 'application/json'

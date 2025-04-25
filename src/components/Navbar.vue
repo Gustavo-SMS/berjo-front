@@ -60,9 +60,11 @@ import { useLogout } from '@/utils/logout'
 const router = useRouter()
 const authStore = useAuthStore()
 
+const apiUrl = import.meta.env.VITE_API_URL
+
 const doLogout = async () => {
   try {
-    const response = await fetchWithAuth('http://127.0.0.1:3333/logout', {
+    const response = await fetchWithAuth(`${apiUrl}/logout`, {
       method: 'POST',
       credentials: 'include'
     }, authStore, router)

@@ -36,11 +36,13 @@
   const router = useRouter()
   const notificationStore = useNotificationStore()
 
+  const apiUrl = import.meta.env.VITE_API_URL
+
   const email = ref('')
   
   const handleRecoverPassword = async () => {
     try {
-      const response = await fetchWithAuth('http://127.0.0.1:3333/users/recoverPassword', {
+      const response = await fetchWithAuth(`${apiUrl}/users/recoverPassword`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
