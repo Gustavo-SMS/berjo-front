@@ -72,7 +72,7 @@ const submitForm = async (event) => {
     event.preventDefault()
 
     const data = {
-        customer: customerId.value,
+        customer: authStore.userRole === 'ADMIN' ? customerId.value : authStore.customerId,
         blinds: orderRows.value
     }
     
