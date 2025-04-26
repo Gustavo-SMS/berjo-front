@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.0.0",
   "private": true,
+  "homepage": "https://Gustavo-SMS.github.io/berjo-front",
   "type": "module",
   "scripts": {
     "dev": "vite",
