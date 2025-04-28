@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submitUpdate" class="row mb-2">
+    <form @submit.prevent="submitUpdate" class="customer-row">
         <div>
             <input v-if="isEditing" type="text" class="form-control" v-model="editableName" id="name" name="name">
             <p v-else>{{ name }}</p>
@@ -38,9 +38,14 @@
         </div>
 
         <div class="actions">
-          <button @click="changeToInput" type="button" class="btn btn-danger col-1">Editar</button>
-          <button type="submit" class="btn btn-primary col-1" :disabled="disabled">Enviar</button>
-          <button v-if="authStore.userRole === 'ADMIN'" @click="openDeleteModal" type="button" class="btn btn-warning col-1">Excluir</button>
+          <template v-if="isEditing">
+            <button type="submit" @click="submitUpdate" class="btn btn-success">Confirmar</button>
+            <button type="button" @click="changeToInput" class="btn btn-secondary">Cancelar</button>
+          </template>
+          <template v-else>
+            <button @click="changeToInput" type="button" class="btn btn-primary">Editar</button>
+            <button v-if="authStore.userRole === 'ADMIN'" @click="openDeleteModal" type="button" class="btn btn-danger">Excluir</button>
+          </template>
         </div>
       </form>
 
@@ -163,14 +168,14 @@ const deleteCustomer = async () => {
 <style scoped>
 .customer-row {
   display: grid;
-  grid-template-columns: 6fr 5fr 2.5fr 5fr 1fr 3fr 3fr 2fr 1.5fr 5.2fr;
+  grid-template-columns: 6fr 5fr 2.5fr 5fr 1.5fr 3fr 3fr 2fr 1.5fr 5.2fr;
   gap: 8px;
   align-items: center;
   margin-bottom: 0.5rem;
   text-align: start;
 }
 
-.customer-row > div {
+.customer-row > div:not(.actions) {
   width: 100%;
   display: flex;
   align-items: center;
@@ -189,7 +194,7 @@ const deleteCustomer = async () => {
 
 .actions {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
 }
 
@@ -205,8 +210,8 @@ const deleteCustomer = async () => {
 }
 
 .customer-row button {
-  width: 100%;
-  min-width: 80px;
+  width: auto;
+  min-width: 70px;
 }
 
 @media (max-width: 768px) {

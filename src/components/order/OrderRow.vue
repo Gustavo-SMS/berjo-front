@@ -2,60 +2,66 @@
     <form @submit.prevent="submitUpdate" class="order-row-wrapper">
       <div class="order-row">
         <div>
-            <input v-if="isEditing" type="text" class="form-control" v-model="editableQuantity" id="quantity" name="quantity">
-            <p v-else>{{ quantity }}</p>
+          <input v-if="isEditing" type="text" class="form-control" v-model="editableQuantity" id="quantity" name="quantity">
+          <p v-else>{{ quantity }}</p>
         </div>
 
-        <div class="col-2">
-            <SelectType v-if="isEditing" @selectedOption="selectedType" :typeValue="editableType"/>
-            <p v-else>{{ type }}</p>
+        <div>
+          <SelectType v-if="isEditing" @selectedOption="selectedType" :typeValue="editableType"/>
+          <p v-else>{{ type }}</p>
         </div>
 
-        <div class="col-2">
+        <div>
           <SelectBlindType 
-                v-if="isEditing" 
-                :key="editableType"
-                :typeValue="editableType"
-                :collection="editableCollection"
-                @selectedOption="selectedBlindTypeId" 
-            />
-            <p v-else>{{ collection + ' ' + color }}</p>
+            v-if="isEditing" 
+            :key="editableType"
+            :typeValue="editableType"
+            :collection="editableCollection"
+            @selectedOption="selectedBlindTypeId" 
+          />
+          <p v-else>{{ collection + ' ' + color }}</p>
         </div>
 
         <div>
-            <input v-if="isEditing" type="number" class="form-control" v-model="editableWidth" id="width" name="width">
-            <p v-else>{{ width }}</p>
+          <input v-if="isEditing" type="number" class="form-control" v-model="editableWidth" id="width" name="width">
+          <p v-else>{{ width }}</p>
         </div>
         <div>
-            <input v-if="isEditing" type="number" class="form-control" v-model="editableHeight" id="height" name="height">
-            <p v-else>{{ height }}</p>
+          <input v-if="isEditing" type="number" class="form-control" v-model="editableHeight" id="height" name="height">
+          <p v-else>{{ height }}</p>
         </div>
         <div>
-            <input v-if="isEditing" type="number" class="form-control" v-model="editableCommand_height" id="command_height" name="command_height">
-            <p v-else>{{ command_height }}</p>
+          <input v-if="isEditing" type="number" class="form-control" v-model="editableCommand_height" id="command_height" name="command_height">
+          <p v-else>{{ command_height }}</p>
         </div>
         <div>
-            <select v-if="isEditing" class="form-control" v-model="editableModel">
-               <option v-for="option in modelOptions" :key="option" >{{ option }}</option>
-            </select>
-            <p v-else>{{ model }}</p>
+          <select v-if="isEditing" class="form-control" v-model="editableModel">
+            <option v-for="option in modelOptions" :key="option" >{{ option }}</option>
+          </select>
+          <p v-else>{{ model }}</p>
         </div>
         <div>
-            <p>{{ editableBlind_price }}</p>
+          <p>{{ editableBlind_price }}</p>
+        </div>
+        
+        <div class="order-actions">
+          <template v-if="isEditing">
+            <button type="submit" @click="submitUpdate" class="btn btn-success">Confirmar</button>
+            <button type="button" @click="changeToInput" class="btn btn-secondary">Cancelar</button>
+          </template>
+          <template v-else>
+            <button @click="changeToInput" type="button" class="btn btn-primary">Editar</button>
+            <button v-if="authStore.userRole === 'ADMIN'" @click="openDeleteModal" type="button" class="btn btn-danger">Excluir</button>
+          </template>
         </div>
       </div>
-        <template v-if="props.status === 'Em espera'" class="order-actions">
-          <button @click="changeToInput" type="button" class="btn btn-danger col-1">Editar</button>
-          <button type="submit" class="btn btn-primary col-1" :disabled="disabled">Enviar</button>
-          <button @click="openDeleteModal" type="button" class="btn btn-warning col-1">Excluir</button>
-        </template>
         
         <div class="observation">
-            <label for="observation">Observações: </label>
-            <input v-if="isEditing" type="text" class="form-control" v-model="editableObservation" id="observation" name="observation">
-            <p v-else>{{ observation }}</p>
+          <label for="observation">Observações: </label>
+          <input v-if="isEditing" type="text" class="form-control" v-model="editableObservation" id="observation" name="observation">
+          <p v-else>{{ observation }}</p>
         </div>
-      </form>
+    </form>
 
       <Teleport to="body">
         <ConfirmationModal
@@ -202,16 +208,15 @@ watch(() => props.blind_price, (newVal) => {
 
 .order-row {
   display: grid;
-  grid-template-columns: 0.5fr 1.5fr 1.5fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 0.5fr 1.5fr 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
   gap: 0.5rem;
   align-items: center;
 }
 
 .order-actions {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
 }
 
 .observation {
@@ -226,4 +231,19 @@ p {
   text-overflow: ellipsis;
 }
 
+@media (max-width: 768px) {
+  .order-row, .order-table-header {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .order-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .observation {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
 </style>

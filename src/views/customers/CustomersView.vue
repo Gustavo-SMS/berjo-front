@@ -138,7 +138,7 @@ const customers = ref([])
 
 .customer-header {
   display: grid;
-  grid-template-columns: 6fr 5fr 2.5fr 5fr 1fr 3fr 3fr 2fr 1.5fr 5.2fr;
+  grid-template-columns: 6fr 5fr 2.5fr 5fr 1.5fr 3fr 3fr 2fr 1.5fr 5.2fr;
   gap: 8px;
   margin-bottom: 1rem;
   font-weight: bold;
