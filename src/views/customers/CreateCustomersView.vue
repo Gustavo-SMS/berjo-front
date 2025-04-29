@@ -3,42 +3,42 @@
         <div class="form-wrapper shadow-sm">
             <form @submit.prevent="submitForm" class="row g-4">
                 <div class="col-12 col-md-6">
-                    <label for="name" class="form-label">Nome</label>
+                    <label for="name" class="form-label">Nome *</label>
                     <input type="text" name="name" id="name" class="form-control" required>
                 </div>
 
                 <div class="col-12 col-md-6">
-                    <label for="email" class="form-label">Email</label>
+                    <label for="email" class="form-label">Email *</label>
                     <input type="email" name="email" id="email" class="form-control" required>
                 </div>
 
                 <div class="col-12 col-md-6">
-                    <label for="phone" class="form-label">Telefone</label>
+                    <label for="phone" class="form-label">Telefone *</label>
                     <input type="tel" name="phone" id="phone" maxlength="11" class="form-control" required>
                 </div>
 
                 <div class="col-12 col-md-6">
-                    <label for="zip" class="form-label">CEP</label>
+                    <label for="zip" class="form-label">CEP *</label>
                     <input type="text" name="zip" id="zip" class="form-control" required>
                 </div>
 
                 <div class="col-12 col-md-6">
-                    <label for="street" class="form-label">Rua</label>
+                    <label for="street" class="form-label">Rua *</label>
                     <input type="text" name="street" id="street" class="form-control" required>
                 </div>
 
                 <div class="col-6 col-md-3">
                     <label for="house_number" class="form-label">Número</label>
-                    <input type="text" name="house_number" id="house_number" class="form-control" required>
+                    <input type="text" name="house_number" id="house_number" class="form-control">
                 </div>
 
                 <div class="col-6 col-md-3">
-                    <label for="district" class="form-label">Bairro</label>
+                    <label for="district" class="form-label">Bairro *</label>
                     <input type="text" name="district" id="district" class="form-control" required>
                 </div>
 
                 <div class="col-12 col-md-6">
-                    <label for="city" class="form-label">Cidade</label>
+                    <label for="city" class="form-label">Cidade *</label>
                     <input type="text" name="city" id="city" class="form-control" required>
                 </div>
         
@@ -108,5 +108,20 @@ const submitForm = async (event) => {
   border-radius: 8px;
   width: 100%;
   max-width: 800px;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 0.75rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark);
 }
 </style>
