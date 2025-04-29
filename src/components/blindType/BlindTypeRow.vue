@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="submitUpdate" class="blind-type-form">
+    <form @submit.prevent="submitUpdate" class="blind-type-row">
         <div>
             <input v-if="isEditing" type="text" class="form-control" v-model="editableType" id="type" name="type">
             <p v-else class="mb-0">{{ type }}</p>
