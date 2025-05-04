@@ -73,9 +73,7 @@ function selectedCustomerId(event, arrayNomes) {
     customerId.value = arrayNomes[event.target.selectedIndex].id
 }
 
-const submitForm = async (event) => {
-    event.preventDefault()
-
+const submitForm = async () => {
     const data = {
         customer: authStore.userRole === 'ADMIN' ? customerId.value : authStore.customerId,
         blinds: orderRows.value
@@ -96,6 +94,7 @@ const submitForm = async (event) => {
         }
 
         notificationStore.addNotification('Pedido criado com sucesso!', 'success')
+        router.push('/orders')
     } catch (error) {
         console.log(error.message)
         notificationStore.addNotification(error.message, 'error')

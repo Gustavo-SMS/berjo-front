@@ -13,7 +13,7 @@
   const props = defineProps({
     show: Boolean,
     message: String,
-    onConfirm: Function,
+    onConfirm: Function
   })
   
   const emit = defineEmits(['close'])
