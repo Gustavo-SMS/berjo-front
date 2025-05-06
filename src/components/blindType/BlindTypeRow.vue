@@ -1,27 +1,27 @@
 <template>
-    <form @submit.prevent="submitUpdate" class="blind-type-row">
-        <div>
-            <p>{{ type }}</p>
-        </div>
-        <div>
-            <p>{{ collection }}</p>
-        </div>
-        <div>
-            <p>{{ color }}</p>
-        </div>
-        <div>
-            <p>{{ max_width }}</p>
-        </div>
-        <div>
-            <p>R$ {{ price }}</p>
-        </div>
+  <form @submit.prevent="submitUpdate" class="blind-type-row">
+      <div>
+          <p>{{ props.blindType.type }}</p>
+      </div>
+      <div>
+          <p>{{ props.blindType.collection }}</p>
+      </div>
+      <div>
+          <p>{{ props.blindType.color }}</p>
+      </div>
+      <div>
+          <p>{{ props.blindType.max_width }}</p>
+      </div>
+      <div>
+          <p>R$ {{ props.blindType.price }}</p>
+      </div>
 
-        <div class="actions" v-if="authStore.userRole === 'ADMIN'">
-            <button @click="openUpdateBlindTypeModal" type="button" class="btn btn-primary">Editar</button>
-            <UpdateBlindTypeModal ref="updateBlindTypeModal" :blindType="blindTypeData" />
-            <button v-if="authStore.userRole === 'ADMIN'" @click="openDeleteModal" type="button" class="btn btn-danger">Excluir</button>
-        </div>
-      </form>
+      <div class="actions" v-if="authStore.userRole === 'ADMIN'">
+          <button @click="openUpdateBlindTypeModal" type="button" class="btn btn-primary">Editar</button>
+          <UpdateBlindTypeModal ref="updateBlindTypeModal" :blindType="blindTypeData" />
+          <button v-if="authStore.userRole === 'ADMIN'" @click="openDeleteModal" type="button" class="btn btn-danger">Excluir</button>
+      </div>
+    </form>
 
       <ConfirmationModal
         v-if="showModal"
@@ -46,7 +46,7 @@ const authStore = useAuthStore()
 const notificationStore = useNotificationStore()
 const apiUrl = import.meta.env.VITE_API_URL
 
-const props = defineProps(['id', 'type', 'collection', 'color', 'max_width', 'price', 'getBlindTypes'])
+const props = defineProps(['blindType', 'getBlindTypes'])
 
 const showModal = ref(false)
 
@@ -81,12 +81,12 @@ const updateBlindTypeModal = ref(null)
 
 const openUpdateBlindTypeModal = async () => {
   blindTypeData.value = {
-    id: props.id,
-    type: props.type,
-    collection: props.collection,
-    color: props.color,
-    max_width: props.max_width,
-    price: props.price,
+    id: props.blindType.id,
+    type: props.blindType.type,
+    collection: props.blindType.collection,
+    color: props.blindType.color,
+    max_width: props.blindType.max_width,
+    price: props.blindType.price,
     getBlindTypes: props.getBlindTypes
   }
   await nextTick()
