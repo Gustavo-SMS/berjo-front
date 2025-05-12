@@ -1,49 +1,43 @@
 <template>
   <div class="container">
-      <div class="box">
-          <div v-if="authStore.userRole === 'ADMIN'" class="search-bar">
-              <input
-                v-model="searchTerm"
-                type="text"
-                class="form-control"
-                placeholder="Buscar por nome..."
-              />
-          </div>
-         
-          <CustomerRow
-              v-for="customer in paginatedCustomers"
-              :key="customer.id"
-              :customer="customer"
-              :getCustomers="getCustomers"
-          />
-
-          <nav v-if="totalPages > 1" class="mt-3">
-            <ul class="pagination justify-content-center">
-              <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                <button class="page-link" @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">
-                  Anterior
-                </button>
-              </li>
-
-              <li
-                v-for="page in totalPages"
-                :key="page"
-                class="page-item"
-                :class="{ active: currentPage === page }"
-              >
-                <button class="page-link" @click="goToPage(page)">
-                  {{ page }}
-                </button>
-              </li>
-
-              <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                <button class="page-link" @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">
-                  Próxima
-                </button>
-              </li>
-            </ul>
-          </nav>
+    <div class="box">
+      <div v-if="authStore.userRole === 'ADMIN'" class="search-bar">
+        <input v-model="searchTerm" type="text" class="form-control" placeholder="Buscar por nome..." />
+        <select @change="getCustomers" v-model="isActive" name="isActive" id="isActive" class="form-control">
+          <option :value=true>Ativos</option>
+          <option :value=false>Inativos</option>
+        </select>
       </div>
+
+      <div v-if="customers.length === 0" class="order-card text-center">
+        <p class="mb-0">Nenhum cliente encontrado.</p>
+      </div>
+
+      <CustomerRow v-for="customer in paginatedCustomers" :key="customer.id" :customer="customer" :canDelete="true"
+        :getCustomers="getCustomers" />
+
+      <nav v-if="totalPages > 1" class="mt-3">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" :class="{ disabled: currentPage === 1 }">
+            <button class="page-link" @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">
+              Anterior
+            </button>
+          </li>
+
+          <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: currentPage === page }">
+            <button class="page-link" @click="goToPage(page)">
+              {{ page }}
+            </button>
+          </li>
+
+          <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+            <button class="page-link" @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">
+              Próxima
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </template>
 
@@ -63,105 +57,119 @@ const notificationStore = useNotificationStore()
 
 const customers = ref([])
 const searchTerm = ref('')
+const isActive = ref(true)
 
 const currentPage = ref(1)
 const itemsPerPage = 2
 
 const getCustomers = async () => {
+  let url = `${apiUrl}/customers`
+
   try {
-            let url = `${apiUrl}/customers`
-
-      if (authStore.userRole === 'CUSTOMER') {
-          url += `/${authStore.customerId}`
-      }
-
-      const response = await fetchWithAuth(url, {
-          method: 'GET',
-          headers: {
-              'Content-type': 'application/json'
-          },
-          credentials: 'include'
-      }, authStore, router)
-
-      const data = await response.json()
-
-      if (!response.ok) {
-          throw new Error(data.error || 'Erro ao buscar clientes')
-      }   
-
-      customers.value = Array.isArray(data) ? data : [data]
-  } catch (error) {
-      console.log(error.message)
-      notificationStore.addNotification(error.message, 'error')
+    if (!isActive.value) {
+      url = url + "/inactive"
     }
+
+    if (authStore.userRole === 'CUSTOMER') {
+      url += `/${authStore.customerId}`
+    }
+
+    const response = await fetchWithAuth(url, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      credentials: 'include'
+    }, authStore, router)
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Erro ao buscar clientes')
+    }
+
+    customers.value = Array.isArray(data) ? data : [data]
+    currentPage.value = 1
+  } catch (error) {
+    console.log(error.message)
+    notificationStore.addNotification(error.message, 'error')
+  }
 }
 
 onMounted(getCustomers)
 
 const filteredCustomers = computed(() => {
-return customers.value.filter((customer) =>
-  customer.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-)
+  return customers.value.filter((customer) =>
+    customer.name.toLowerCase().includes(searchTerm.value.toLowerCase())
+  )
 })
 
 const totalPages = computed(() =>
-Math.ceil(filteredCustomers.value.length / itemsPerPage)
+  Math.ceil(filteredCustomers.value.length / itemsPerPage)
 )
 
 const paginatedCustomers = computed(() => {
-const start = (currentPage.value - 1) * itemsPerPage
-return filteredCustomers.value.slice(start, start + itemsPerPage)
+  const start = (currentPage.value - 1) * itemsPerPage
+  return filteredCustomers.value.slice(start, start + itemsPerPage)
 })
 
 const goToPage = (page) => {
-if (page >= 1 && page <= totalPages.value) {
-  currentPage.value = page
-}
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
 }
 
 watch(searchTerm, () => {
-currentPage.value = 1
+  currentPage.value = 1
 })
 </script>
 
 <style scoped>
 .container {
-width: 100vw;
-min-height: 100vh;
-padding: 2rem 1rem;
-display: flex;
-align-items: flex-start;
-justify-content: center;
-background-color: var(--color-background, #f8f9fa);
+  width: 100vw;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background-color: var(--color-background, #f8f9fa);
 }
 
 .box {
-width: 100%;
-max-width: 1200px;
-background-color: var(--color-surface, #ffffff);
-padding: 1rem;
-border-radius: 0.5rem;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1200px;
+  background-color: var(--color-surface, #ffffff);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.box > *:not(:last-child) {
-margin-bottom: 1rem;
+.box>*:not(:last-child) {
+  margin-bottom: 1rem;
 }
 
 .search-bar {
-display: flex;
-gap: 0.5rem;
-margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.order-card {
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 @media (max-width: 768px) {
-.search-bar {
-  flex-direction: column;
-}
+  .search-bar {
+    flex-direction: column;
+  }
 
-.search-bar input,
-.search-bar button {
-  width: 100%;
-}
+  .search-bar input,
+  .search-bar button {
+    width: 100%;
+  }
 }
 </style>
