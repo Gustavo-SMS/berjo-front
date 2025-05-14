@@ -102,7 +102,7 @@ const openDeleteModal = () => {
 
 const deleteCustomer = async () => {
   try {
-      const response = await fetchWithAuth(`${apiUrl}/customers/${props.id}`, {
+      const response = await fetchWithAuth(`${apiUrl}/customers/${props.customer.id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
