@@ -125,7 +125,7 @@ const deleteCustomer = async () => {
 
 const reactivateCustomer = async () => {
     try {
-        const response = await fetchWithAuth(`http://127.0.0.1:3333/customers/reactivate/${props.customer.id}`, {
+        const response = await fetchWithAuth(`${apiUrl}/customers/reactivate/${props.customer.id}`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
