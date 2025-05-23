@@ -278,7 +278,7 @@ watch(() => props.customer, (newCustomer) => {
     editableDistrict.value = newCustomer.district || ''
     editableState.value = newCustomer.state || ''
     editableZip.value = newCustomer.zip || ''
-    editableDebt.value = newCustomer.debt || ''
+    editableDebt.value = newCustomer.debt || 0
     selectedRadio.value = (newCustomer.docNumber && newCustomer.docNumber.length === 11) ? 'cpf' : 'cnpj'
 }, { immediate: true })
 

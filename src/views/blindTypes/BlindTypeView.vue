@@ -87,8 +87,7 @@ const getBlindTypes = async () => {
             method: 'GET',
             headers: {
                 'Content-type': 'application/json'
-            },
-            credentials: 'include'
+            }
         }, authStore, router)
 
         if (!response.ok) {

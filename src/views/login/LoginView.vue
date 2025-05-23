@@ -1,48 +1,39 @@
 <template>
-    <main class="login-container">
-      <form ref="loginForm" @submit.prevent="submitForm" class="login-form">
-        <h1 class="login-title">Faça Login</h1>
-        
-        <div class="form-group">
-          <label for="login">Login</label>
-          <input id="login" name="login" type="text" class="form-input" placeholder="Digite o login ou email" required>
-        </div>
-        <div class="form-group password-group">
-          <label for="password">Senha</label>
-          <div class="password-wrapper">
-            <input
-              id="password"
-              name="password"
-              :type="showPassword ? 'text' : 'password'"
-              class="form-input"
-              placeholder="Digite a senha"
-              required
-            >
-            <button
-              type="button"
-              class="toggle-password"
-              @click="togglePassword"
-              :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
-            >
-              <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
-            </button>
-          </div>
-        </div>
+  <main class="login-container">
+    <form ref="loginForm" @submit.prevent="submitForm" class="login-form">
+      <h1 class="login-title">Faça Login</h1>
 
-        <div class="g-recaptcha"></div>
-
-        <div class="login-actions">
-          <button class="btn-secondary" type="button" @click="openRecoverPasswordModal">
-            Esqueci minha senha
+      <div class="form-group">
+        <label for="login">Login</label>
+        <input id="login" name="login" type="text" class="form-input" placeholder="Digite o login ou email" required>
+      </div>
+      <div class="form-group password-group">
+        <label for="password">Senha</label>
+        <div class="password-wrapper">
+          <input id="password" name="password" :type="showPassword ? 'text' : 'password'" class="form-input"
+            placeholder="Digite a senha" required>
+          <button type="button" class="toggle-password" @click="togglePassword"
+            :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'">
+            <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
           </button>
-          <RecoverPasswordModal ref="recoverPasswordModal" />
         </div>
-        
-        <button :disabled="!captchaToken" type="submit" class="btn-primary full-width">
-          Entrar
+      </div>
+
+      <div class="g-recaptcha"></div>
+
+      <div class="login-actions">
+        <button class="btn-secondary" type="button" @click="openRecoverPasswordModal">
+          Esqueci minha senha
         </button>
-      </form>
-    </main>
+        <RecoverPasswordModal ref="recoverPasswordModal" />
+      </div>
+
+      <button :disabled="!captchaToken || isLoading" type="submit" class="btn-primary full-width">
+        <span v-if="isLoading">Entrando...</span>
+        <span v-else>Entrar</span>
+      </button>
+    </form>
+  </main>
 </template>
 
 <script setup>
@@ -61,6 +52,8 @@ const router = useRouter()
 const loginForm = ref(null)
 
 const captchaToken = ref('')
+
+const isLoading = ref(false)
 
 onMounted(() => {
   window.onCaptchaVerified = (token) => {
@@ -82,53 +75,57 @@ onMounted(() => {
 })
 
 const submitForm = async () => {
-    if (!captchaToken.value) {
-      notificationStore.addNotification('Confirme o captcha para continuar.', 'error')
-      return
+  if (!captchaToken.value) {
+    notificationStore.addNotification('Confirme o captcha para continuar.', 'error')
+    return
+  }
+
+  isLoading.value = true
+
+  const formData = new FormData(loginForm.value)
+  const data = Object.fromEntries(formData)
+
+  try {
+    const response = await fetch(`${apiUrl}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    })
+
+    const result = await response.json()
+
+    if (!response.ok) {
+      throw new Error(result.error || result.msg || 'Erro ao logar')
     }
 
-    const formData = new FormData(loginForm.value)
-    const data = Object.fromEntries(formData)
-    try {
-      const response = await fetch(`${apiUrl}/login`, {
-        method: 'POST',
-        headers: {
-            'Content-type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify(data)
-        })
+    authStore.setTokens(result.accessToken, result.refreshToken)
 
-      const result = await response.json()
-      
-      if (!response.ok) {
-        if (response.status === 403) {
-          throw new Error('Verificação do captcha falhou. Tente novamente.')
-        }
-        throw new Error(result.error || result.msg || 'Erro ao logar')
+    const meRes = await fetch(`${apiUrl}/me`, {
+      headers: {
+        Authorization: `Bearer ${authStore.accessToken}`
       }
+    })
 
-      const meRes = await fetch(`${apiUrl}/me`, {
-        credentials: 'include'
-      })
+    if (!meRes.ok) {
+      const errorData = await meRes.json()
+      throw new Error(errorData.error || 'Erro ao obter dados do usuário')
+    }
 
-      const meData = await meRes.json()
+    const meData = await meRes.json()
+    authStore.setUser(meData.role, meData.customerId)
 
-      if (!meRes.ok) {
-        throw new Error(meData.error || 'Erro ao obter dados do usuário')
-      }
-        
-      authStore.setUser(meData.role, meData.customerId)
-      router.push('/orders')   
-    } catch (error) {
-      console.log(error.message)
-      notificationStore.addNotification(error.message, 'error')
+    router.push('/orders')
+  } catch (error) {
+    console.log(error.message)
+    notificationStore.addNotification(error.message, 'error')
 
-      if (window.grecaptcha) {
-        window.grecaptcha.reset()
-        captchaToken.value = ''
-      }
-    } 
+    if (window.grecaptcha) {
+      window.grecaptcha.reset()
+      captchaToken.value = ''
+    }
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const recoverPasswordModal = ref(null)

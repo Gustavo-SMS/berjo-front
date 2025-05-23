@@ -27,7 +27,7 @@
         v-if="showModal"
         :show="showModal"
         message="Tem certeza que deseja excluir este tipo?"
-        :onConfirm="deleteBlindType"
+        @confirm="deleteBlindType"
         @close="showModal = false"
       />
 </template>

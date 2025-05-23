@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="price">Observações *</label>
+                        <label for="price">Observações</label>
                         <input v-model="editableObservation" type="text" name="observation" id="observation" class="form-input" min="0" step="0.01">
                     </div>
 

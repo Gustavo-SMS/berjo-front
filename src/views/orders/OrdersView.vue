@@ -2,12 +2,7 @@
     <div class="container-lg px-3 mt-5">
         <div v-if="authStore.userRole === 'ADMIN'" class="row g-3 align-items-center mb-4">
             <div class="col-md-6 col-lg-4">
-                <input
-                v-model="searchTerm"
-                type="text"
-                class="form-control"
-                placeholder="Buscar por nome..."
-                />
+                <input v-model="searchTerm" type="text" class="form-control" placeholder="Buscar por nome..." />
             </div>
             <div class="col-md-6 col-lg-4">
                 <select v-model="selectedStatus" name="selectStatus" id="selectStatus" class="form-select">
@@ -33,17 +28,14 @@
                             <option value="Em produção">Em produção</option>
                             <option value="Concluido">Concluído</option>
                         </select>
-                        <button @click="changeStatus(order.id)" class="btn btn-success">Confirmar</button>
+                        <button @click="() => changeStatus(order.id)" class="btn btn-success">Confirmar</button>
                     </div>
 
                     <div v-else class="status-view">
                         <span class="badge bg-secondary badge-status">{{ order.status }}</span>
-                        <button
-                        v-if="authStore.userRole === 'ADMIN'"
-                        @click="editStatus(order.id, order.status)"
-                        class="btn btn-outline-primary"
-                        >
-                        Mudar Status
+                        <button v-if="authStore.userRole === 'ADMIN'" @click="editStatus(order.id, order.status)"
+                            class="btn btn-outline-primary">
+                            Mudar Status
                         </button>
                     </div>
                 </div>
@@ -53,68 +45,43 @@
 
                     <button
                         v-if="authStore.userRole === 'ADMIN' || (authStore.userRole === 'CUSTOMER' && order.status === 'Em espera')"
-                        @click="() => openDeleteModal(order.id)"
-                        class="btn btn-danger"
-                    >
+                        @click="() => openDeleteModal(order.id)" class="btn btn-danger">
                         Excluir
                     </button>
                 </div>
             </div>
 
-            <OrderRow 
-                v-for="blind in order.blind" 
-                :key="blind.id"
-                :id="blind.id"
-                :quantity="blind.quantity"
-                :type="blind.type.type"
-                :collection="blind.type.collection"
-                :blindTypeId="blind.type.id"
-                :color="blind.type.color"
-                :width="blind.width"
-                :height="blind.height"
-                :command_height="blind.command_height"
-                :model="blind.model"
-                :blind_price="blind.blind_price"
-                :observation="blind.observation"
-                :status="order.status"
-                :getOrders="getOrders"
-            />
+            <OrderRow v-for="blind in order.blind" :key="blind.id" :id="blind.id" :quantity="blind.quantity"
+                :type="blind.type.type" :collection="blind.type.collection" :blindTypeId="blind.type.id"
+                :color="blind.type.color" :width="blind.width" :height="blind.height"
+                :command_height="blind.command_height" :model="blind.model" :blind_price="blind.blind_price"
+                :observation="blind.observation" :status="order.status" :getOrders="getOrders" />
         </div>
 
         <nav v-if="totalPages > 1" class="mt-3">
-          <ul class="pagination justify-content-center">
-            <li class="page-item" :class="{ disabled: currentPage === 1 }">
-              <button class="page-link" @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">
-                Anterior
-              </button>
-            </li>
+            <ul class="pagination justify-content-center">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <button class="page-link" @click="goToPage(currentPage - 1)" :disabled="currentPage === 1">
+                        Anterior
+                    </button>
+                </li>
 
-            <li
-              v-for="page in totalPages"
-              :key="page"
-              class="page-item"
-              :class="{ active: currentPage === page }"
-            >
-              <button class="page-link" @click="goToPage(page)">
-                {{ page }}
-              </button>
-            </li>
+                <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: currentPage === page }">
+                    <button class="page-link" @click="goToPage(page)">
+                        {{ page }}
+                    </button>
+                </li>
 
-            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-              <button class="page-link" @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">
-                Próxima
-              </button>
-            </li>
-          </ul>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <button class="page-link" @click="goToPage(currentPage + 1)" :disabled="currentPage === totalPages">
+                        Próxima
+                    </button>
+                </li>
+            </ul>
         </nav>
     </div>
-<ConfirmationModal
-v-if="showModal"
-:show="showModal"
-message="Tem certeza que deseja excluir?"
-:onConfirm="() => deleteOrder(orderToDeleteId)"
-@close="showModal = false"
-/>
+    <ConfirmationModal v-if="showModal" :show="showModal" message="Tem certeza que deseja excluir?"
+        @confirm="() => deleteOrder(orderToDeleteId)" @close="showModal = false" />
 </template>
 
 <script setup>
@@ -145,7 +112,7 @@ const itemsPerPage = 2
 
 const getOrders = async (status, customerId) => {
     let url = `${apiUrl}/orders/filter/`
-    
+
     if (authStore.userRole === 'CUSTOMER') {
         customerId = authStore.customerId
     }
@@ -161,8 +128,7 @@ const getOrders = async (status, customerId) => {
     try {
         const response = await fetchWithAuth(url, {
             method: 'GET',
-            headers: { 'Content-type': 'application/json' },
-            credentials: 'include'
+            headers: { 'Content-type': 'application/json' }
         }, authStore, router)
 
         const data = await response.json()
@@ -197,8 +163,7 @@ const changeStatus = async (orderId) => {
     try {
         const response = await fetchWithAuth(`${apiUrl}/orders/status/`, {
             method: 'PUT',
-            headers: { 'Content-type': 'application/json' },
-            credentials: 'include',
+            headers: { 'Content-type': 'application/json' }
             body: JSON.stringify(payload)
         }, authStore, router)
 
@@ -229,8 +194,7 @@ const deleteOrder = async (orderId) => {
     try {
         const response = await fetchWithAuth(`${apiUrl}/orders/${orderId}`, {
             method: 'DELETE',
-            headers: { 'Content-type': 'application/json' },
-            credentials: 'include'
+            headers: { 'Content-type': 'application/json' }
         }, authStore, router)
 
         if (!response.ok) {
@@ -244,19 +208,21 @@ const deleteOrder = async (orderId) => {
     } catch (error) {
         console.error(error.message)
         notificationStore.addNotification(error.message, 'error')
+    } finally {
+        showModal.value = false
     }
 }
 
 const filteredOrders = computed(() => {
-  return orders.value.filter((order) => {
-    const nameMatch = order.customer.name.toLowerCase().includes(searchTerm.value.toLowerCase())
-    const statusMatch = !selectedStatus.value || order.status === selectedStatus.value
-    return nameMatch && statusMatch
-  })
+    return orders.value.filter((order) => {
+        const nameMatch = order.customer.name.toLowerCase().includes(searchTerm.value.toLowerCase())
+        const statusMatch = !selectedStatus.value || order.status === selectedStatus.value
+        return nameMatch && statusMatch
+    })
 })
 
 const totalPages = computed(() =>
-  Math.ceil(filteredOrders.value.length / itemsPerPage)
+    Math.ceil(filteredOrders.value.length / itemsPerPage)
 )
 
 const paginatedOrders = computed(() => {
@@ -282,65 +248,65 @@ watch(selectedStatus, () => {
 
 <style scoped>
 .order-card {
-  background-color: var(--color-surface);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    background-color: var(--color-surface);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .order-header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
 
 .order-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
 }
 
 .order-table-header {
-  display: grid;
-  grid-template-columns: 0.5fr 1.5fr 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  gap: 0.5rem;
-  padding: 0.5rem 0;
-  font-weight: bold;
-  border-bottom: 2px solid var(--color-border);
-  color: var(--color-text);
+    display: grid;
+    grid-template-columns: 0.5fr 1.5fr 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    font-weight: bold;
+    border-bottom: 2px solid var(--color-border);
+    color: var(--color-text);
 }
 
 .order-title-status {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-  flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
 }
 
 .order-client-name {
-  margin: 0;
+    margin: 0;
 }
 
 .badge-status {
-  font-size: 1rem;
-  padding: 0.375rem 0.75rem;
-  line-height: 1.5;
-  display: inline-flex;
-  align-items: center;
-  margin-right: 0.5rem;
-  height: calc(1rem * 1.5 + 0.75rem);
+    font-size: 1rem;
+    padding: 0.375rem 0.75rem;
+    line-height: 1.5;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 0.5rem;
+    height: calc(1rem * 1.5 + 0.75rem);
 }
 
 .status-edit,
 .status-view {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 </style>

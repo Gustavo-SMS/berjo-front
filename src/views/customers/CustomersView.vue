@@ -44,7 +44,6 @@
 <script setup>
 import { onMounted, ref, computed, watch } from 'vue'
 import CustomerRow from '@/components/customer/CustomerRow.vue'
-import { useNotificationStore } from '@/stores/notificationStore'
 import { useAuthStore } from '@/stores/authStore'
 import { useRouter } from 'vue-router'
 import { fetchWithAuth } from '@/utils/api'
@@ -53,7 +52,6 @@ const apiUrl = import.meta.env.VITE_API_URL
 
 const authStore = useAuthStore()
 const router = useRouter()
-const notificationStore = useNotificationStore()
 
 const customers = ref([])
 const searchTerm = ref('')
@@ -78,8 +76,7 @@ const getCustomers = async () => {
       method: 'GET',
       headers: {
         'Content-type': 'application/json'
-      },
-      credentials: 'include'
+      }
     }, authStore, router)
 
     const data = await response.json()
@@ -92,7 +89,6 @@ const getCustomers = async () => {
     currentPage.value = 1
   } catch (error) {
     console.log(error.message)
-    notificationStore.addNotification(error.message, 'error')
   }
 }
 
@@ -126,9 +122,6 @@ watch(searchTerm, () => {
 
 <style scoped>
 .container {
-  width: 100vw;
-  min-height: 100vh;
-  padding: 2rem 1rem;
   display: flex;
   align-items: flex-start;
   justify-content: center;

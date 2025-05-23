@@ -73,7 +73,7 @@
           v-if="showModal"
           :show="showModal"
           message="Deseja cadastrar um usuário para este cliente?"
-          :onConfirm="registerUser"
+          @confirm="registerUser"
           @close="changeView"
         />
 </template>
@@ -112,7 +112,6 @@ const openRegisterModal = () => {
 }
 
 const changeView = () => {
-    showModal.value = false
     router.push('/customers')
 }
 
@@ -224,9 +223,6 @@ watch(selectedRadio, () => {
 
 <style scoped>
 .container {
-  width: 100vw;
-  height: 100vh;
-
   display: flex;
   align-items: center;
   justify-content: center;

@@ -65,8 +65,7 @@ const apiUrl = import.meta.env.VITE_API_URL
 const doLogout = async () => {
   try {
     const response = await fetchWithAuth(`${apiUrl}/logout`, {
-      method: 'POST',
-      credentials: 'include'
+      method: 'POST'
     }, authStore, router)
 
     if (!response.ok) {
@@ -85,6 +84,7 @@ const doLogout = async () => {
 <style scoped>
 .navbar {
   padding: 0.8rem 1rem;
+  margin-bottom: 5rem;
 }
 .nav-link {
   font-weight: 500;
