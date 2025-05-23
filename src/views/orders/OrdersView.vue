@@ -163,7 +163,7 @@ const changeStatus = async (orderId) => {
     try {
         const response = await fetchWithAuth(`${apiUrl}/orders/status/`, {
             method: 'PUT',
-            headers: { 'Content-type': 'application/json' }
+            headers: { 'Content-type': 'application/json' },
             body: JSON.stringify(payload)
         }, authStore, router)
 
